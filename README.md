@@ -58,5 +58,7 @@ Copyright 2017 - The LineageOS Project.
 ### Changes
 - Added generic stubs for `gson-prebuilt-jar` and `jopt-simple-4.9` to unblock `currysrc` (from `external/icu/tools/srcgen/currysrc`)
 - Added header stubs: `libaudio_system_headers`, `libbluetooth-types-header`, `libbacktrace_headers`
-- Added java library stubs: `kxml2-2.3.0`, `platform-test-annotations`, `xerial-sqlite-jdbc`, `commons-codec`
+- Added java library stubs: `kxml2-2.3.0`, `platform-test-annotations`, `xerial-sqlite-jdbc`, `commons-codec`, `lint`, `lint_tests`, `com.google.api.grpc_proto-google-common-protos-prebuilt-jar`, `jsonlib`
+- Added cc_library stubs: `libaudioutils`, `libsndfile`
+- Added cc_library_headers stubs: `libgsi_headers`
 
