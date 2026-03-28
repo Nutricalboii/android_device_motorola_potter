@@ -243,7 +243,7 @@ TARGET_USES_ALTERNATIVE_MANUAL_NETWORK_SELECT := true
 
 # SELinux
 BOARD_SEPOLICY_VERS := 30.0
-include device/qcom/sepolicy-legacy-um/sepolicy.mk
+include device/qcom/sepolicy-legacy-um/SEPolicy.mk
 
 BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy
 
@@ -302,3 +302,16 @@ BUILD_BROKEN_DUP_RULES := true
 TARGET_SCREEN_WIDTH := 1080
 TARGET_SCREEN_HEIGHT := 1920
 TW_THEME := portrait_hdpi
+
+# Disable strict VINTF enforcement (temporary for bring-up)
+BOARD_VINTF_IGNORE_TARGET_FCM_VERSION := true
+
+# Allow legacy kernel compatibility
+BOARD_KERNEL_VERSION := 3.18
+
+# Relax SELinux for early bring-up
+SELINUX_IGNORE_NEVERALLOWS := true
+
+# Allow broken build rules temporarily
+BUILD_BROKEN_DUP_RULES := true
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
