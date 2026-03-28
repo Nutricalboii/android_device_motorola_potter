@@ -50,3 +50,10 @@ Copyright 2017 - The LineageOS Project.
 - Removed `stable.i18n.module.platform.api.stubs` stub (from `external/icu/android_icu4j`)
 - Fixed duplicate `dx-doc-stubs` in `dalvik/dx/bin/Android.bp` (real definition in `dalvik/dx/src/`)
 - All native foundation libraries (`libbase`, `liblog`, `libicui18n/uc`) now have real source
+
+---
+
+## 2026-03-29 04:30 — Tools Dependency Resolution
+
+### Changes
+- Added generic stubs for `gson-prebuilt-jar` and `jopt-simple-4.9` to unblock `currysrc` (from `external/icu/tools/srcgen/currysrc`)
