@@ -39,3 +39,14 @@ Copyright 2017 - The LineageOS Project.
 - Soong Bootstrap: ✅ All framework deps resolved
 - Ninja Generation: ⏳ In progress (processing real native dependency graph)
 - Target: `lineage_potter-userdebug` (LineageOS 20.0 / Android 13)
+
+---
+
+## 2026-03-29 04:05 — Conflict Resolution: Stub vs Real Source
+
+### Changes
+- Removed `icu4j` stub (now provided by `external/icu`, which is synced)
+- Removed `legacy.i18n.module.platform.api.stubs` stub (from `external/icu/android_icu4j`)
+- Removed `stable.i18n.module.platform.api.stubs` stub (from `external/icu/android_icu4j`)
+- Fixed duplicate `dx-doc-stubs` in `dalvik/dx/bin/Android.bp` (real definition in `dalvik/dx/src/`)
+- All native foundation libraries (`libbase`, `liblog`, `libicui18n/uc`) now have real source
