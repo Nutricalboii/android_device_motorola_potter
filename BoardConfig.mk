@@ -1,7 +1,6 @@
 #
 # Copyright (C) 2016 The CyanogenMod Project
-#               2017-2018 The LineageOS Project
-#               2018-2019 ArrowOS
+#               2017 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,32 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-DEVICE_PATH := device/motorola/potter
-
 -include vendor/motorola/potter/BoardConfigVendor.mk
 
-# Soong namespaces
-PRODUCT_SOONG_NAMESPACES += \
-    $(DEVICE_PATH) \
-    hardware/qcom-caf/msm8996 \
-    hardware/qcom-caf/msm8953
-
-# Build system
-BUILD_BROKEN_DUP_RULES := true
-BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
-
-# VNDK
-PRODUCT_USE_VNDK_OVERRIDE := true
-BOARD_VNDK_VERSION := current
-
-DEVICE_PACKAGE_OVERLAYS += $(DEVICE_PATH)/overlay
+DEVICE_PATH := device/motorola/potter
 
 BOARD_VENDOR := motorola-qcom
 
-# AIDs and CAPS
-TARGET_FS_CONFIG_GEN += \
-    $(DEVICE_PATH)/config.fs \
-    $(DEVICE_PATH)/mot_aids.fs
+TARGET_SPECIFIC_HEADER_PATH := $(DEVICE_PATH)/include
 
 # Platform
 TARGET_BOARD_PLATFORM := msm8953
@@ -51,64 +31,33 @@ TARGET_BOOTLOADER_BOARD_NAME := MSM8953
 TARGET_NO_BOOTLOADER := true
 
 # Architecture
-TARGET_ARCH := arm64
-TARGET_ARCH_VARIANT := armv8-a
-TARGET_CPU_ABI := arm64-v8a
-TARGET_CPU_ABI2 :=
-TARGET_CPU_VARIANT := generic
-TARGET_CPU_VARIANT_RUNTIME := cortex-a53
-
-TARGET_2ND_ARCH := arm
-TARGET_2ND_ARCH_VARIANT := armv8-a
-TARGET_2ND_CPU_ABI := armeabi-v7a
-TARGET_2ND_CPU_ABI2 := armeabi
-TARGET_2ND_CPU_VARIANT := generic
-TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a53
-
-TARGET_USES_64_BIT_BINDER := true
-TARGET_SUPPORTS_64_BIT_APPS := false
-
-# Legacy Binders
-TARGET_USES_ASHMEM := true
-TARGET_USES_LEGACY_BINDER := true
+TARGET_ARCH := arm
+TARGET_ARCH_VARIANT := armv7-a-neon
+TARGET_CPU_ABI := armeabi-v7a
+TARGET_CPU_ABI2 := armeabi
+TARGET_CPU_VARIANT := cortex-a53
 
 # Asserts
 TARGET_OTA_ASSERT_DEVICE := potter,potter_retail
 
-# Enable dexpreopt to speed boot time
-WITH_DEXPREOPT := true
-
-# GPS
-TARGET_NO_RPC := true
-USE_DEVICE_SPECIFIC_GPS := true
-BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := $(TARGET_BOARD_PLATFORM)
-
 # Init
-TARGET_INIT_VENDOR_LIB := //$(DEVICE_PATH):libinit_potter
-TARGET_RECOVERY_DEVICE_MODULES := //$(DEVICE_PATH):libinit_potter
+TARGET_INIT_VENDOR_LIB := libinit_potter
+TARGET_RECOVERY_DEVICE_MODULES := libinit_potter
 
 # Kernel
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0
-BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom user_debug=30
-BOARD_KERNEL_CMDLINE += msm_rtb.filter=0x237 ehci-hcd.park=3
-BOARD_KERNEL_CMDLINE += androidboot.bootdevice=7824900.sdhci lpm_levels.sleep_disabled=1
-BOARD_KERNEL_CMDLINE += vmalloc=350M loop.max_part=16
-#BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
+BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=30 msm_rtb.filter=0x237
+BOARD_KERNEL_CMDLINE += ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci lpm_levels.sleep_disabled=1 vmalloc=350M
 BOARD_KERNEL_BASE := 0x80000000
-BOARD_KERNEL_IMAGE_NAME := Image.gz
 BOARD_KERNEL_PAGESIZE := 2048
-BOARD_KERNEL_TAGS_OFFSET := 0x00000100
-BOARD_RAMDISK_OFFSET := 0x01000000
 BOARD_KERNEL_SEPARATED_DT := true
-BOARD_DTBTOOL_ARGS := --force-v3
-TARGET_KERNEL_HEADER_ARCH := arm64
+TARGET_CUSTOM_DTBTOOL := dtbTool_custom
+BOARD_DTBTOOL_ARGS := --force-v3 --motorola 1
+BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000 --tags_offset 0x00000100
+TARGET_KERNEL_ARCH := arm64
+BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
+KERNEL_TOOLCHAIN := $(shell pwd)/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin
 TARGET_KERNEL_CONFIG := potter_defconfig
-TARGET_KERNEL_SOURCE := kernel/motorola/potter
-TARGET_KERNEL_CLANG_COMPILE := true
-
-# Recovery
-TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-BOARD_BUILD_VENDOR_RAMDISK_IMAGE := false
+TARGET_KERNEL_SOURCE := kernel/motorola/msm8953
 
 # Audio
 AUDIO_FEATURE_ENABLED_ALAC_OFFLOAD := true
@@ -119,67 +68,67 @@ AUDIO_FEATURE_ENABLED_ANC_HEADSET := true
 AUDIO_FEATURE_ENABLED_COMPRESS_VOIP := true
 AUDIO_FEATURE_ENABLED_DEV_ARBI := true
 AUDIO_FEATURE_ENABLED_EXT_HDMI := true
-AUDIO_FEATURE_ENABLED_EXTN_POST_PROC := true
 AUDIO_FEATURE_ENABLED_EXTN_FLAC_DECODER := true
-#AUDIO_FEATURE_ENABLED_EXTN_FORMATS := true
+AUDIO_FEATURE_ENABLED_EXTN_FORMATS := true
 AUDIO_FEATURE_ENABLED_FLAC_OFFLOAD := true
 AUDIO_FEATURE_ENABLED_FLUENCE := true
 AUDIO_FEATURE_ENABLED_HFP := true
-AUDIO_FEATURE_ENABLED_HWDEP_CAL := true
 AUDIO_FEATURE_ENABLED_KPI_OPTIMIZE := true
-AUDIO_FEATURE_ENABLED_LOW_LATENCY_CAPTURE := true
-AUDIO_FEATURE_LOW_LATENCY_PRIMARY := true
 AUDIO_FEATURE_ENABLED_HIFI_AUDIO := true
 AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS := true
 AUDIO_FEATURE_ENABLED_PCM_OFFLOAD := true
 AUDIO_FEATURE_ENABLED_PCM_OFFLOAD_24 := true
 AUDIO_FEATURE_ENABLED_FM_POWER_OPT := true
 AUDIO_FEATURE_ENABLED_SOURCE_TRACKING := true
-AUDIO_FEATURE_ENABLED_NEW_SAMPLE_RATE := true
 AUDIO_FEATURE_ENABLED_SSR := true
 AUDIO_FEATURE_ENABLED_VBAT_MONITOR := true
 AUDIO_FEATURE_ENABLED_VORBIS_OFFLOAD := true
-AUDIO_FEATURE_ENABLED_PROXY_DEVICE := true
 AUDIO_FEATURE_ENABLED_WMA_OFFLOAD := true
 AUDIO_USE_LL_AS_PRIMARY_OUTPUT := true
-AUDIO_FEATURE_ENABLED_SND_MONITOR := true
 BOARD_USES_ALSA_AUDIO := true
 USE_CUSTOM_AUDIO_POLICY := 1
-USE_XML_AUDIO_POLICY_CONF := 1
+# USE_XML_AUDIO_POLICY_CONF := 1
 
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(DEVICE_PATH)/bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_QCOM := true
+QCOM_BT_READ_ADDR_FROM_PROP := true
 
 # Camera
+TARGET_CAMERASERVICE_CLOSES_NATIVE_HANDLES := true
 USE_DEVICE_SPECIFIC_CAMERA := true
-BOARD_QTI_CAMERA_32BIT_ONLY := true
 
 # Charger
 BACKLIGHT_PATH := /sys/class/leds/lcd-backlight/brightness
 BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_NO_CHARGER_LED := true
 
-# DT2W
+# CMHW
+BOARD_USES_CYANOGEN_HARDWARE := true
 TARGET_TAP_TO_WAKE_NODE := "/sys/android_touch/doubletap2wake"
+BOARD_HARDWARE_CLASS += $(DEVICE_PATH)/cmhw
+
+# CNE / DPM
+BOARD_USES_QCNE := true
+
+# CPUsets
+ENABLE_CPUSETS := true
 
 # Crypto
 TARGET_HW_DISK_ENCRYPTION := true
 
 # Display
+HAVE_ADRENO_SOURCE:= false
 BOARD_USES_ADRENO := true
+NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
 TARGET_USES_C2D_COMPOSITION := true
-TARGET_USES_GRALLOC1 := true
 TARGET_USES_ION := true
-TARGET_USES_HWC2 := true
-MAX_VIRTUAL_DISPLAY_DIMENSION := 4096
-TARGET_FORCE_HWC_FOR_VIRTUAL_DISPLAYS := true
-TARGET_SCREEN_DENSITY := 420
-
-# exfat
-TARGET_EXFAT_DRIVER := exfat
+TARGET_USES_NEW_ION_API := true
+USE_OPENGL_RENDERER := true
+MAX_EGL_CACHE_KEY_SIZE := 12*1024
+MAX_EGL_CACHE_SIZE := 2048*1024
 
 # FM
 BOARD_HAVE_QCOM_FM := true
@@ -190,101 +139,52 @@ TARGET_PROVIDES_KEYMASTER := true
 # Lights
 TARGET_PROVIDES_LIBLIGHT := true
 
-# Manifest
-DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/configs/manifest.xml
-DEVICE_MATRIX_FILE   := $(DEVICE_PATH)/configs/compatibility_matrix.xml
-
-# NFC
-NXP_CHIP_TYPE := PN551
-BOARD_NFC_HAL_SUFFIX := $(TARGET_BOARD_PLATFORM)
+# Media
+TARGET_USES_MEDIA_EXTENSIONS := true
 
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 131072
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216        #    16384 * 1024 mmcblk0p37
 BOARD_CACHEIMAGE_PARTITION_SIZE := 260014080      #   253920 * 1024 mmcblk0p52
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 33554432    #    16484 * 1024 mmcblk0p38
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 16879616    #    16484 * 1024 mmcblk0p38
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3510353920    #  3428080 * 1024 mmcblk0p53
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 26401026048 # 25782252 * 1024 mmcblk0p54
-
-BOARD_ROOT_EXTRA_SYMLINKS := \
-    /mnt/vendor/persist:/persist \
-    /vendor/firmware:/firmware \
-    /vendor/dsp:/dsp \
-    /vendor/firmware/image:firmware/image
-
-BOARD_ROOT_EXTRA_FOLDERS := dsp firmware fsg persist
 
 # Peripheral manager
 TARGET_PER_MGR_ENABLED := true
 
 # Power
-TARGET_PROVIDES_POWERHAL := true
-TARGET_HAS_NO_WLAN_STATS := true
+TARGET_POWERHAL_VARIANT := qcom
 
-# QC flags
+# Qualcomm support
 BOARD_USES_QCOM_HARDWARE := true
 BOARD_USES_QC_TIME_SERVICES := true
+TARGET_USE_SDCLANG := true
+
+# Radio
+BOARD_PROVIDES_LIBRIL := true
+BOARD_PROVIDES_RILD := true
 
 # Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
-TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.recovery
+TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.qcom
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
-LZMA_RAMDISK_TARGETS := recovery
 
 # Releasetools
 TARGET_RELEASETOOLS_EXTENSIONS := $(DEVICE_PATH)/releasetools
 
-# RIL
-TARGET_PROVIDES_QTI_TELEPHONY_JAR := true
-TARGET_USES_OLD_MNC_FORMAT := true
-TARGET_USES_ALTERNATIVE_MANUAL_NETWORK_SELECT := true
-
 # SELinux
-BOARD_SEPOLICY_VERS := 30.0
-include device/qcom/sepolicy-legacy-um/SEPolicy.mk
-
+include device/qcom/sepolicy/sepolicy.mk
 BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy
 
 # Sensor
 USE_SENSOR_MULTI_HAL := true
-BOARD_USES_MOT_SENSOR_HUB := true
-BOARD_USES_CAP_SENSOR_SX9310 := true
-MOT_SENSOR_HUB_HW_TYPE_L0 := true
-MOT_AP_SENSOR_HW_REARPROX := true
-MOT_AP_SENSOR_HW_REARPROX_2 := true
-MOT_SENSOR_HUB_HW_AK09912 := true
-MOT_SENSOR_HUB_HW_BMI160 := true
-MOT_SENSOR_HUB_FEATURE_CHOPCHOP := true
-MOT_SENSOR_HUB_FEATURE_LIFT := true
-MOT_SENSOR_HUB_FEATURE_PEDO := true
-MOT_SENSOR_HUB_FEATURE_LA := true
-MOT_SENSOR_HUB_FEATURE_GR := true
-
-TARGET_ENABLE_MEDIADRM_64 := true
-
-# Shim
-TARGET_LD_SHIM_LIBS := \
-    /system/vendor/bin/adspd|libshim_adsp.so \
-    /system/vendor/lib64/libmdmcutback.so|libqsap_shim.so \
-    /system/vendor/lib/libjustshoot.so|libjustshoot_shim.so \
-    /system/vendor/lib/libgui.so|libui_shim.so \
-    /system/vendor/lib/hw/gralloc.msm8953.so|libui_shim.so
-
-
-# Use mke2fs to create ext4 images
-TARGET_USES_MKE2FS := true
-
-# Security patch level
-VENDOR_SECURITY_PATCH := 2018-12-01
-
-# SurfaceFlinger
-TARGET_USE_QCOM_SURFACEFLINGER := true
 
 # Wifi
 BOARD_HAS_QCOM_WLAN              := true
-PRODUCT_VENDOR_MOVE_ENABLED      := true
+BOARD_HAS_QCOM_WLAN_SDK          := true
 BOARD_WLAN_DEVICE                := qcwcn
 BOARD_HOSTAPD_DRIVER             := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_qcwcn
@@ -292,26 +192,9 @@ BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_qcwcn
 WIFI_DRIVER_FW_PATH_AP           := "ap"
 WIFI_DRIVER_FW_PATH_STA          := "sta"
-WIFI_DRIVER_FW_PATH_P2P          := "p2p"
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
-TARGET_DISABLE_WCNSS_CONFIG_COPY := true
-WIFI_HIDL_FEATURE_DISABLE_AP_MAC_RANDOMIZATION := true
 
-BUILD_BROKEN_DUP_RULES := true
+# Disable generated bootanimation as we don't have ImageMagick installed and don't need it for Ubuntu Touch
+TARGET_BOOTANIMATION := device/motorola/potter/lineage.mk
 
-TARGET_SCREEN_WIDTH := 1080
-TARGET_SCREEN_HEIGHT := 1920
-TW_THEME := portrait_hdpi
 
-# Disable strict VINTF enforcement (temporary for bring-up)
-BOARD_VINTF_IGNORE_TARGET_FCM_VERSION := true
-
-# Allow legacy kernel compatibility
-BOARD_KERNEL_VERSION := 3.18
-
-# Relax SELinux for early bring-up
-SELINUX_IGNORE_NEVERALLOWS := true
-
-# Allow broken build rules temporarily
-BUILD_BROKEN_DUP_RULES := true
-BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
