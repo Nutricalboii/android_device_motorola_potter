@@ -107,8 +107,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/gps/etc/xtwifi.conf:system/etc/xtwifi.conf
 
 # CMActions
-PRODUCT_PACKAGES += \
-    CMActions
 
 # Display
 PRODUCT_PACKAGES += \
@@ -307,3 +305,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 
 PRODUCT_GMS_CLIENTID_BASE := android-motorola
+# Disable Android tests and benchmarks (not needed for Ubuntu Touch)
+BUILD_WITH_TESTS := false
+BUILD_WITH_BENCHMARKS := false
+PRODUCT_EXCLUDE_PACKAGES += update_engine update_engine_sideload update_engine_client libpuffdiff libpuffpatch car-frameworks-service libupdate_engine libupdate_engine_boot_control libupdate_engine_android libupdate_engine_client bootctrl.*
+
+

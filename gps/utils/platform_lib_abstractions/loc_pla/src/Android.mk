@@ -32,7 +32,8 @@ LOCAL_LDFLAGS += -Wl,--export-dynamic
 LOCAL_C_INCLUDES:= \
     $(LOCAL_PATH)/../include \
     $(TARGET_OUT_HEADERS)/gps.utils \
-    $(TARGET_OUT_HEADERS)/libloc_stub
+    $(TARGET_OUT_HEADERS)/libloc_stub \
+    frameworks/base/core/jni/include
 
 LOCAL_COPY_HEADERS_TO:= libloc_pla/
 LOCAL_COPY_HEADERS:= \

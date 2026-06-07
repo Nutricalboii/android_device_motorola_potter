@@ -35,6 +35,16 @@
 #include "property_service.h"
 #include "log.h"
 #include "util.h"
+#include <android-base/properties.h>
+
+// Helpers to map legacy property APIs to Android 9 APIs
+static inline std::string property_get(const char* name) {
+    return android::base::GetProperty(name, "");
+}
+
+static inline uint32_t property_set(const std::string& name, const std::string& value) {
+    return android::init::property_set(name, value);
+}
 
 void property_override(char const prop[], char const value[])
 {

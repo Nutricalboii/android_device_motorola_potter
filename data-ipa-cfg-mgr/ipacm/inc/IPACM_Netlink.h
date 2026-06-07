@@ -40,11 +40,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef IPACM_NETLINK_H
 #define IPACM_NETLINK_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -57,6 +52,18 @@ extern "C"
 #include <linux/netlink.h>
 #include <netinet/in.h>
 #include "IPACM_Defs.h"
+
+#if defined(_LINUX_SOCKET_H) && !defined(_UAPI_LINUX_SOCKET_H)
+struct sockaddr_storage {
+	unsigned short ss_family;
+	char __data[128 - sizeof(unsigned short)];
+} __attribute__((aligned(8)));
+#endif
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 #define MAX_NUM_OF_FD 10
 #define IPA_NL_MSG_MAX_LEN (2048)
