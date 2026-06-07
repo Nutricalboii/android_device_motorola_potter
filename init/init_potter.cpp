@@ -30,12 +30,21 @@
 #include <stdlib.h>
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
-#include <sys/sysinfo.h>
-#include <android-base/properties.h>
-#include "property_service.h"
-#include "vendor_init.h"
 
-using android::init::property_set;
+#include "vendor_init.h"
+#include "property_service.h"
+#include "log.h"
+#include "util.h"
+#include <android-base/properties.h>
+
+// Helpers to map legacy property APIs to Android 9 APIs
+static inline std::string property_get(const char* name) {
+    return android::base::GetProperty(name, "");
+}
+
+static inline uint32_t property_set(const std::string& name, const std::string& value) {
+    return android::init::property_set(name, value);
+}
 
 void property_override(char const prop[], char const value[])
 {
@@ -48,31 +57,10 @@ void property_override(char const prop[], char const value[])
         __system_property_add(prop, strlen(prop), value, strlen(value));
 }
 
-void property_override_triple(char const product_prop[], char const system_prop[], char const vendor_prop[], char const value[])
-{
-    property_override(product_prop, value);
-    property_override(system_prop, value);
-    property_override(vendor_prop, value);
-}
-
-/* Get Ram size for different variants */
-void check_device()
-{
-    struct sysinfo sys;
-    sysinfo(&sys);
-    if (sys.totalram > 3072ull * 1024 * 1024) {
-        property_set("ro.boot.ram", "4GB");
-    } else if (sys.totalram > 2048ull * 1024 * 1024) {
-        property_set("ro.boot.ram", "3GB");
-    } else {
-        property_set("ro.boot.ram", "2GB");
-    }
-}
-
 void num_sims() {
     std::string dualsim;
 
-    dualsim = android::base::GetProperty("ro.boot.dualsim", "");
+    dualsim = property_get("ro.boot.dualsim");
     property_set("ro.hw.dualsim", dualsim.c_str());
 
     if (dualsim == "true") {
@@ -84,23 +72,20 @@ void num_sims() {
 
 void vendor_load_properties()
 {
-    // fingerprint
-    property_override("ro.build.description", "potter-user 8.1.0 OPSS28.85-17-4 28698 release-keys");
-    property_override_triple("ro.build.fingerprint", "ro.system.build.fingerprint", "ro.vendor.build.fingerprint", "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys");
+    std::string platform = property_get("ro.board.platform");
 
-    // sku
-    std::string sku = "Moto G5 Plus (";
-    sku.append(android::base::GetProperty("ro.boot.hardware.sku", ""));
-    sku.append(")");
-    property_set("ro.product.model", sku.c_str());
+    if (platform != ANDROID_TARGET)
+        return;
+
+    std::string sku = property_get("ro.boot.hardware.sku");
+    property_override("ro.product.model", sku.c_str());
 
     // rmt_storage
-    std::string device = android::base::GetProperty("ro.boot.device", "");
-    std::string radio = android::base::GetProperty("ro.boot.radio", "");
-    property_set("ro.vendor.hw.device", device.c_str());
-    property_set("ro.vendor.hw.radio", radio.c_str());
+    std::string device = property_get("ro.boot.device");
+    std::string radio = property_get("ro.boot.radio");
+    property_set("ro.hw.device", device.c_str());
+    property_set("ro.hw.radio", radio.c_str());
     property_set("ro.hw.fps", "true");
-    property_set("ro.hw.imager", "12MP");
 
     num_sims();
 
@@ -116,6 +101,5 @@ void vendor_load_properties()
     if (sku == "XT1683") {
         property_set("ro.hw.dtv", "true");
     }
-
-    check_device();
 }
+
