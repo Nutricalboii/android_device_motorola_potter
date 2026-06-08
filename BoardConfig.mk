@@ -198,4 +198,6 @@ WPA_SUPPLICANT_VERSION           := VER_0_8_X
 # Disable generated bootanimation as we don't have ImageMagick installed and don't need it for Ubuntu Touch
 TARGET_BOOTANIMATION := device/motorola/potter/lineage.mk
 
+BOARD_USE_LOCAL_INITRD := true
+
 
