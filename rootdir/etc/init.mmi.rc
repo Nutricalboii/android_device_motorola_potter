@@ -366,3 +366,13 @@ on property:sys.wifi.tethering=false
 
 on property:ro.bootmode=normal
    write /sys/module/usb3813_hub/parameters/boost_val 3
+
+service logger /system/bin/logcat -b all -D -f /cache/boot_log.txt
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+
+on post-fs-data
+    start logger
